@@ -41,7 +41,7 @@ actions:
           description: fastboot oem
         run:
           steps:
-          - cd /media/genivi_sftp/artifacts/ARTIFACTS_PATH
+          - cd ARTIFACTS_PATH
           - ls -l
           - ./fastboot.sh --noresetenv
 #          - sleep 90
