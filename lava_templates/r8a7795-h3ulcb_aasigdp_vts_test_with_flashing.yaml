@@ -65,7 +65,7 @@ actions:
         TEST_PARAMS: vts-hal-auto --module VtsHalBroadcastradioV2_0Target --disable-reboot --abi arm64-v8a
         #           TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip
         # For now the VTS is in a fixed location.  TODO cleanup skunkworks path
-        TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts//media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip
+        TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/ANDROID_VTS_ZIP
         TEST_PATH: android-vts
         RESULTS_FORMAT: atomic
         ANDROID_VERSION: android-mainline-10.0.0_r29
