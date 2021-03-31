@@ -38,7 +38,9 @@ TEMPLATE_DIR="$WORK_DIR/lava_templates"
 
 # For us, source is always a local file URL
 URL_UP="sftp:///docs.projects.genivi.org/artifacts"
-URL_DOWN="file:///media/genivi_sftp/artifacts"
+SFTP_PATH="/media/genivi_sftp/artifacts/"
+URL_DOWN="file://$SFTP_PATH"
+
 env
 LAVACLI_ARGS="--uri https://$CIP_LAVA_LAB_USER:$CIP_LAVA_LAB_TOKEN@lava.genivi.org/RPC2"
 INDEX="0"
@@ -69,7 +71,7 @@ create_job () {
 		local modules_url="$url_down/$(basename $MODULES)"
 	fi
 	local rootfs_url="$url_down/rootfs.tar.bz2"
-	local android_results_url="$url_down/build_result"
+	local android_results_url="$SFTP_PATH/build_result"
 	# FIXME:
 	local android_vts_zip="android-vts-10.0_r29.zip"
 
@@ -93,7 +95,7 @@ create_job () {
 	fi
 	sed -i "s|KERNEL_URL|$kernel_url|g" $job_definition
 	sed -i "s|ROOTFS_URL|$rootfs_url|g" $job_definition
-	sed -i "s|ARTIFACTS_PATH|$android_results_url|g" $job_definition
+	sed -i "s|ARTIFACTS_PATH|$android_results_path|g" $job_definition
 	sed -i "s|ANDROID_VTS_ZIP|$android_vts_zip|g" $job_definition
 }
 
