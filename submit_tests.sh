@@ -300,7 +300,7 @@ check_status () {
 						| awk '{$1=$1};1'`
 					DEVICE[$i]=$device
 
-					if [ "${STATUS[$i]}" != $status ]; then
+					if [ "${STATUS[$i]}" != "$status" ]; then
 						STATUS[$i]=$status
 
 						# Something has changed
