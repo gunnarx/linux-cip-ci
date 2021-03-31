@@ -1,0 +1,98 @@
+device_type: r8a7796-m3ulcb
+
+job_name: JOB_NAME
+timeouts:
+  job:
+    minutes: 20
+  action:
+   minutes: 5
+  actions:
+    power-off:
+      seconds: 30
+priority: medium
+visibility: public
+
+
+actions:
+- deploy:
+    to: fastboot
+    reboot: fastboot-reboot
+    images:
+      ptable:
+        url: IMAGE_URL
+        http://images.validation.linaro.org/builds.96boards.org/snapshots/reference-platform/components/uefi/latest/release/hikey/ptable-aosp-8g.img
+
+        # add all the images listed in fastboot
+
+        # Scripts:
+        #device/renesas/common/fastboot.sh
+        #device/renesas/common/functions.sh
+        #device/renesas/common/ipl_emmc_flash.sh
+        #device/renesas/common/ipl_hf_flash.sh
+
+        #$ ./fastboot oem format
+        #$ ./fastboot reboot bootloader
+        #$ ./fastboot.sh --noresetenv
+
+    ## Set environment values on U-boot
+    #=> env default -a
+    #=> setenv ethaddr <board MAC addr>
+    #=> editenv serialno
+
+   ## Please interrupt autoboot
+
+    #Set board serial number to serialno: 0000XXXX (where XXXX = board number like 0585)
+    #=> editenv bootargs
+    #Edit bootargs: video=XXXX-X:d init_time=xxxxxxxxxx
+    #“video” variable needs to set parameter related to display configuration. The default setting
+    #is below.
+    #Salvator case:
+    #video=LVDS-1:d video=VGA-1:d
+    #“init_time” variable needs to set UNIX time.
+    #You can get it by executing “date +%s” command on host PC.
+    #The board don't have any RTC.
+    #If time and date is not accurate, a few issues will be happened.
+    #=> saveenv
+    #=> reset
+    #Interrupt autoboot
+    #=> fastboot
+    #4) Execute below commands on host PC
+    #Format eMMC partition and write image file to target. Please use “fastboot” command that you built
+    #in step 2.5 Building Android, IPL, U-Boot, and Kernel sources. (Of course, fastboot tool included in
+    #latest Android SDK is also worked.)
+    #$ cd <your_images_dir>
+    #$ chmod a+x fastboot
+    #$ chmod a+x ./fastboot.sh
+    #$ ./fastboot oem format
+    #$ ./fastboot reboot bootloader
+    #$ ./fastboot.sh --noresetenv
+    #... Note. Please use “fastboot” command not “fastboot.sh” here.
+    #... Note. Please use “fastboot.sh” shell script here.
+    #... Note. Please don’t use “--nobl” option.
+
+
+    timeout:
+      minutes: 20
+    to: tftp
+    kernel:
+      url: KERNEL_URL
+      type: image
+    nfsrootfs:
+      url: ROOTFS_URL
+      compression: bz2
+    dtb:
+      url: DTB_URL
+    os: oe
+
+- boot:
+    auto_login:
+      login_prompt: 'm3ulcb login: '
+      username: root
+      password_prompt: 'Password:'
+      password: root
+    timeout:
+      minutes: 5
+    method: u-boot
+    commands: nfs
+    prompts:
+      - 'root@m3ulcb:~#'
