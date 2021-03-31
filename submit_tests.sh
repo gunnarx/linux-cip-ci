@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 # Copyright (C) 2019, Renesas Electronics Europe GmbH, Chris Paterson
 # <chris.paterson2@renesas.com>
 #
@@ -33,6 +33,12 @@ set -e
 WORK_DIR=`pwd`
 OUTPUT_DIR="$WORK_DIR/output"
 TEMPLATE_DIR="$WORK_DIR/lava_templates"
+
+### DO NOT COMMIT
+CIP_LAVA_LAB_USER=script_test
+CIP_LAVA_LAB_TOKEN=fds72hcdjkasl32nfdsof3h7pcsah9f3y432fhuoewqjfewahufew
+### DO NOT COMMIT
+
 ################################################################################
 
 # For us, source is always a local file URL
@@ -49,7 +55,7 @@ set_up () {
 }
 
 clean_up () {
-	rm -rf $TMP_DIR
+	echo FIXME NO CLEANUP #rm -rf $TMP_DIR
 }
 
 get_template () {
@@ -91,6 +97,8 @@ create_job () {
 }
 
 # Parameters:  $1 = path to root file system tarball
+#	sed -i "s|ROOTFS_LOCATION|$build_id/rootfs.tar.bz2|g" $job_definition
+
 upload_binaries () {
 	# Note: If there are multiple jobs in the same pipeline building the
 	# same SHA, same ARCH and same CONFIG _name_, then binaries will be
@@ -156,6 +164,7 @@ find_jobs () {
 			KERNEL=$kernel
 			DTB=$device_tree
 			MODULES=$modules
+            echo "MODULES is $modules"
 
 			if [ "$DTB" == "N/A" ]; then
 				USE_DTB=false
@@ -171,7 +180,7 @@ find_jobs () {
 			fi
 
 			print_kernel_info
-			create_job $TEMPLATE_IDENTIFIER
+			create_job $1
 		done
 	done
 }
@@ -182,7 +191,8 @@ submit_job() {
 	if [ -f "$1" ]; then
 		echo "Submitting $1 to LAVA master..."
 		# Catch error that occurs if invalid yaml file is submitted
-		local ret=`lavacli $LAVACLI_ARGS jobs submit $1` || error=true
+#		local ret=`lavacli $LAVACLI_ARGS jobs submit $1` || error=true
+		echo "simulated lavacli $LAVACLI_ARGS jobs submit $1"
 
 		if [[ $ret != [0-9]* ]]
 		then
@@ -193,7 +203,7 @@ submit_job() {
 			echo "Job submitted successfully as #${ret}."
 
 			local lavacli_output=$TMP_DIR/lavacli_output
-			lavacli $LAVACLI_ARGS jobs show ${ret} \
+			echo simulated lavacli $LAVACLI_ARGS jobs show ${ret} \
 				> $lavacli_output
 
 			local status=`cat $lavacli_output \
@@ -270,7 +280,7 @@ check_status () {
 				if [ "${STATUS[$i]}" != "Finished" ]
 				then
 					local lavacli_output=$TMP_DIR/lavacli_output
-					lavacli $LAVACLI_ARGS jobs show $i \
+					echo simulated lavacli $LAVACLI_ARGS jobs show $i \
 						> $lavacli_output
 
 					local status=`cat $lavacli_output \
@@ -321,7 +331,7 @@ check_status () {
 			# Print job outcome
 			for i in "${JOBS[@]}"
 			do
-				local ret=`lavacli $LAVACLI_ARGS \
+				local ret=`echo simulated lavacli $LAVACLI_ARGS \
 					jobs show $i \
 					| grep Health \
 					| cut -d ":" -f 2 \
@@ -348,13 +358,13 @@ check_status () {
 
 trap clean_up SIGHUP SIGINT SIGTERM
 set_up
-find_jobs
-# NOTE - this variant of the script requires the root filesystem tarball path
-# to be specified as first parameter:
-
 # Base name of template (excluding other variable things like ARCH/CONFIG/DEVICE/...)
 # e.g. for r8a7796-m3ulcb_genivi_image_test.yaml, TEMPLATE_IDENTIFIER is: genivi_image_test
 TEMPLATE_IDENTIFIER="$1"
+find_jobs $TEMPLATE_IDENTIFIER
+# NOTE - this variant of the script requires the root filesystem tarball path
+# to be specified as first parameter:
+
 upload_binaries "$2" "$3" "$4"
 submit_jobs
 if ! $SUBMIT_ONLY; then
