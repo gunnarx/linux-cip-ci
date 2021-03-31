@@ -71,7 +71,7 @@ create_job () {
 	local rootfs_url="$url_down/rootfs.tar.bz2"
 	local android_results_url="$url_down/build_result"
 	# FIXME:
-	local android_vts_zip="/media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip"
+	local android_vts_zip="android-vts-10.0_r29.zip"
 
 	if $USE_DTB; then
 		local job_name="${VERSION}_${ARCH}_${CONFIG}_${DTB_NAME}_${testname}"
@@ -194,16 +194,16 @@ submit_job() {
 		# Catch error that occurs if invalid yaml file is submitted
 #		local ret=`lavacli $LAVACLI_ARGS jobs submit $1` || error=true
 		#echo "simulated lavacli $LAVACLI_ARGS jobs submit $1"
-		lavacli $LAVACLI_ARGS jobs submit $1
+        ret=$(lavacli $LAVACLI_ARGS jobs submit $1)
+        rv=$?
 
-		if [[ $ret != [0-9]* ]]
-		then
-			echo "Something went wrong with job submission. LAVA returned:"
-			echo ${ret}
-			exit 4
-		else
-			echo "Job submitted successfully as #${ret}."
-
+        if [[ $ret != [0-9]* || $rv -ne 0 ]]
+        then
+          echo "Something went wrong with job submission. LAVA returned:"
+          echo "${ret}, rv=$rv"
+          exit 4
+        else
+			echo "Job submitted successfully as job number #${ret}."
 			local lavacli_output=$TMP_DIR/lavacli_output
 			echo lavacli $LAVACLI_ARGS jobs show ${ret} \
 				> $lavacli_output
