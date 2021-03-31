@@ -23,7 +23,7 @@ actions:
     method: bootloader
     bootloader: u-boot
     commands: ['fastboot']
-# FLASH THE BOARD
+  # FLASH THE BOARD
 - test:
     docker:
       image: android_platform_tools
@@ -49,25 +49,25 @@ actions:
           - ./adb wait-for-device
           - ./adb shell ls -l /
 # Actual test section
- - test:
-   docker:
-     image: android_platform_tools
-     local: true
-     timeout:
-       minutes: 360
-       definitions:
-         # TODO: Rename this repository.
-         - repository: https://github.com/slawr/test-definitions.git
-           from: git
-           path: automated/android/noninteractive-tradefed/tradefed.yaml
-           branch: stevel/a10-vts-cts-experiments
-           params:
-             TEST_PARAMS: vts-hal-auto --module VtsHalBroadcastradioV2_0Target --disable-reboot --abi arm64-v8a
-#             TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip
-             # For now the VTS is in a fixed location.  TODO cleanup skunkworks path
-             TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/ANDROID_VTS_ZIP
-             TEST_PATH: android-vts
-             RESULTS_FORMAT: atomic
-             ANDROID_VERSION: android-mainline-10.0.0_r29
-           name: vts-hal-auto
+- test:
+    docker:
+      image: android_platform_tools
+      local: true
+      timeout:
+        minutes: 360
+        definitions:
+          # TODO: Rename this repository.
+        - repository: https://github.com/slawr/test-definitions.git
+          from: git
+          path: automated/android/noninteractive-tradefed/tradefed.yaml
+          branch: stevel/a10-vts-cts-experiments
+          params:
+            TEST_PARAMS: vts-hal-auto --module VtsHalBroadcastradioV2_0Target --disable-reboot --abi arm64-v8a
+#              TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip
+              # For now the VTS is in a fixed location.  TODO cleanup skunkworks path
+            TEST_URL: /media/genivi_sftp/artifacts/skunkworks/android/vts/ANDROID_VTS_ZIP
+            TEST_PATH: android-vts
+            RESULTS_FORMAT: atomic
+            ANDROID_VERSION: android-mainline-10.0.0_r29
+          name: vts-hal-auto
 
