@@ -36,9 +36,19 @@ TEMPLATE_DIR="$WORK_DIR/lava_templates"
 
 ################################################################################
 
+# input parameters are:
+# ./gocd_submit_android_test.sh aasigdp_vts_test_with_flashing aasig-docker 38   
+# these are forwarded to this script submit_tests "$1" "$2" "$3" "$4"
+# so....
+# $1 = template name
+# $2 = pipline name
+# $3 = pipeline counter
+
 # For us, source is always a local file URL
 URL_UP="sftp:///docs.projects.genivi.org/artifacts"
-SFTP_PATH="/media/genivi_sftp/artifacts/"
+# This is the location that the GoCD job will place the files at -- must match!j
+# build_result /artifacts/${GO_PIPELINE_NAME}_${GO_PIPELINE_COUNTER}
+SFTP_PATH="/media/genivi_sftp/artifacts/$2_$3"
 URL_DOWN="file://$SFTP_PATH"
 
 env
