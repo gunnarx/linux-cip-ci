@@ -71,7 +71,7 @@ create_job () {
 		local modules_url="$url_down/$(basename $MODULES)"
 	fi
 	local rootfs_url="$url_down/rootfs.tar.bz2"
-	local android_results_url="$SFTP_PATH/build_result"
+    local android_results_path="$SFTP_PATH/build_result"
 	# FIXME:
 	local android_vts_zip="android-vts-10.0_r29.zip"
 
