@@ -1,0 +1,41 @@
+device_type: r8a7796-m3ulcb
+
+job_name: JOB_NAME
+timeouts:
+  job:
+    minutes: 10
+  action:
+   minutes: 5
+  actions:
+    power-off:
+      seconds: 30
+priority: high
+visibility: public
+
+actions:
+- deploy:
+    timeout:
+      minutes: 4
+    to: tftp
+    kernel:
+      url: KERNEL_URL
+      type: image
+    nfsrootfs:
+      url: ROOTFS_URL
+      compression: bz2
+    dtb:
+      url: DTB_URL
+    os: oe
+
+- boot:
+    auto_login:
+      login_prompt: 'm3ulcb login: '
+      username: root
+      password_prompt: 'Password:'
+      password: root
+    timeout:
+      minutes: 5
+    method: u-boot
+    commands: nfs
+    prompts:
+      - 'root@m3ulcb:~#'
