@@ -192,8 +192,6 @@ submit_job() {
 	if [ -f "$1" ]; then
 		echo "Submitting $1 to LAVA master..."
 		# Catch error that occurs if invalid yaml file is submitted
-#		local ret=`lavacli $LAVACLI_ARGS jobs submit $1` || error=true
-		#echo "simulated lavacli $LAVACLI_ARGS jobs submit $1"
         ret=$(lavacli $LAVACLI_ARGS jobs submit $1)
         rv=$?
 
