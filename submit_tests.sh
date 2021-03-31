@@ -34,16 +34,12 @@ WORK_DIR=`pwd`
 OUTPUT_DIR="$WORK_DIR/output"
 TEMPLATE_DIR="$WORK_DIR/lava_templates"
 
-### DO NOT COMMIT
-CIP_LAVA_LAB_USER=script_test
-CIP_LAVA_LAB_TOKEN=fds72hcdjkasl32nfdsof3h7pcsah9f3y432fhuoewqjfewahufew
-### DO NOT COMMIT
-
 ################################################################################
 
 # For us, source is always a local file URL
 URL_UP="sftp:///docs.projects.genivi.org/artifacts"
 URL_DOWN="file:///media/genivi_sftp/artifacts"
+env
 LAVACLI_ARGS="--uri https://$CIP_LAVA_LAB_USER:$CIP_LAVA_LAB_TOKEN@lava.genivi.org/RPC2"
 INDEX="0"
 if [ -z "$TEST_TIMEOUT" ]; then TEST_TIMEOUT=30; fi
@@ -73,6 +69,9 @@ create_job () {
 		local modules_url="$url_down/$(basename $MODULES)"
 	fi
 	local rootfs_url="$url_down/rootfs.tar.bz2"
+	local android_results_url="$url_down/build_result"
+	# FIXME:
+	local android_vts_zip="/media/genivi_sftp/artifacts/skunkworks/android/vts/android-vts-10.0_r29.zip"
 
 	if $USE_DTB; then
 		local job_name="${VERSION}_${ARCH}_${CONFIG}_${DTB_NAME}_${testname}"
@@ -94,6 +93,8 @@ create_job () {
 	fi
 	sed -i "s|KERNEL_URL|$kernel_url|g" $job_definition
 	sed -i "s|ROOTFS_URL|$rootfs_url|g" $job_definition
+	sed -i "s|ARTIFACTS_PATH|$android_results_url|g" $job_definition
+	sed -i "s|ANDROID_VTS_ZIP|$android_vts_zip|g" $job_definition
 }
 
 # Parameters:  $1 = path to root file system tarball
@@ -192,7 +193,8 @@ submit_job() {
 		echo "Submitting $1 to LAVA master..."
 		# Catch error that occurs if invalid yaml file is submitted
 #		local ret=`lavacli $LAVACLI_ARGS jobs submit $1` || error=true
-		echo "simulated lavacli $LAVACLI_ARGS jobs submit $1"
+		#echo "simulated lavacli $LAVACLI_ARGS jobs submit $1"
+		lavacli $LAVACLI_ARGS jobs submit $1
 
 		if [[ $ret != [0-9]* ]]
 		then
@@ -203,7 +205,7 @@ submit_job() {
 			echo "Job submitted successfully as #${ret}."
 
 			local lavacli_output=$TMP_DIR/lavacli_output
-			echo simulated lavacli $LAVACLI_ARGS jobs show ${ret} \
+			echo lavacli $LAVACLI_ARGS jobs show ${ret} \
 				> $lavacli_output
 
 			local status=`cat $lavacli_output \
@@ -280,7 +282,7 @@ check_status () {
 				if [ "${STATUS[$i]}" != "Finished" ]
 				then
 					local lavacli_output=$TMP_DIR/lavacli_output
-					echo simulated lavacli $LAVACLI_ARGS jobs show $i \
+					echo lavacli $LAVACLI_ARGS jobs show $i \
 						> $lavacli_output
 
 					local status=`cat $lavacli_output \
@@ -331,7 +333,7 @@ check_status () {
 			# Print job outcome
 			for i in "${JOBS[@]}"
 			do
-				local ret=`echo simulated lavacli $LAVACLI_ARGS \
+				local ret=`echo lavacli $LAVACLI_ARGS \
 					jobs show $i \
 					| grep Health \
 					| cut -d ":" -f 2 \
@@ -365,7 +367,8 @@ find_jobs $TEMPLATE_IDENTIFIER
 # NOTE - this variant of the script requires the root filesystem tarball path
 # to be specified as first parameter:
 
-upload_binaries "$2" "$3" "$4"
+# Upload done by stage in go.cd pipeline instead
+#upload_binaries "$2" "$3" "$4"
 submit_jobs
 if ! $SUBMIT_ONLY; then
 	check_status

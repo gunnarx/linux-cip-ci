@@ -43,6 +43,8 @@ get_credentials() {
       exit 1
     else
       . "$LAVA_CREDENTIALS_FILE"
+      export CIP_LAVA_LAB_USER
+      export CIP_LAVA_LAB_TOKEN
     fi
   fi
 
@@ -73,6 +75,7 @@ get_value() {
 #}
 
 get_pipeline_instance() {
+   env 1>&2
   echo "$(get_value pipe_name GO_PIPELINE_NAME)_$(get_value counter GO_PIPELINE_COUNTER)"
 }
 
