@@ -63,7 +63,14 @@ set_up () {
 }
 
 clean_up () {
-	echo FIXME NO CLEANUP #rm -rf $TMP_DIR
+  if [ -z "$lavacli_job_numbers" ] ; then
+    for n in cat $lavacli_job_numbers ; then
+      echo "Cancelling job number $n..."
+      echo "+ lavacli $LAVACLI_ARGS jobs cancel $1"
+      ret=$(lavacli $LAVACLI_ARGS jobs cancel $1)
+      echo "... retval=$ret"
+  fi
+  #rm -rf $TMP_DIR
 }
 
 get_template () {
@@ -215,6 +222,8 @@ submit_job() {
         else
 			echo "Job submitted successfully as job number #${ret}."
 			local lavacli_output=$TMP_DIR/lavacli_output
+			export lavacli_job_numbers=$TMP_DIR/lavacli_job_numbers
+            echo ${ret} >>$lavacli_job_numbers
 			lavacli $LAVACLI_ARGS jobs show ${ret} \
 				> $lavacli_output
 
