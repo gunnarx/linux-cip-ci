@@ -62,6 +62,9 @@ set_up () {
 	TMP_DIR="$(mktemp -d)"
 }
 
+cancel_all() {
+  echo TODO LAVACLI CANCEL ALL
+}
 clean_up () {
   if [ -z "$lavacli_job_numbers" ] ; then
     for n in cat $lavacli_job_numbers ; then
@@ -388,6 +391,10 @@ set_up
 # Base name of template (excluding other variable things like ARCH/CONFIG/DEVICE/...)
 # e.g. for r8a7796-m3ulcb_genivi_image_test.yaml, TEMPLATE_IDENTIFIER is: genivi_image_test
 TEMPLATE_IDENTIFIER="$1"
+if [ "$1" = "CANCEL" ] ; then
+  cancel_all
+fi
+
 find_jobs $TEMPLATE_IDENTIFIER
 # NOTE - this variant of the script requires the root filesystem tarball path
 # to be specified as first parameter:
