@@ -215,7 +215,7 @@ submit_job() {
         else
 			echo "Job submitted successfully as job number #${ret}."
 			local lavacli_output=$TMP_DIR/lavacli_output
-			echo lavacli $LAVACLI_ARGS jobs show ${ret} \
+			lavacli $LAVACLI_ARGS jobs show ${ret} \
 				> $lavacli_output
 
 			local status=`cat $lavacli_output \
@@ -299,6 +299,10 @@ check_status () {
 						| grep "state" \
 						| cut -d ":" -f 2 \
 						| awk '{$1=$1};1'`
+echo DEBUG: lavacli_output is:
+echo ==========================
+cat $lavacli_output
+echo ==========================
 
 					local device_type=`cat $lavacli_output \
 						| grep "device-type" \
@@ -320,7 +324,9 @@ check_status () {
 					else
 						STATUS[$i]=$status
 					fi
-				fi
+                else
+                  echo "Status is not Finished, it is: ${STATUS[$i]}"
+                fi
 			done
 
 			if check_if_all_finished; then
