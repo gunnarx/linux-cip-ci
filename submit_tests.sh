@@ -306,7 +306,7 @@ check_status () {
 				if [ "${STATUS[$i]}" != "Finished" ]
 				then
 					local lavacli_output=$TMP_DIR/lavacli_output
-					echo lavacli $LAVACLI_ARGS jobs show $i \
+					lavacli $LAVACLI_ARGS jobs show $i \
 						> $lavacli_output
 
 					local status=`cat $lavacli_output \
@@ -363,7 +363,7 @@ echo ==========================
 			# Print job outcome
 			for i in "${JOBS[@]}"
 			do
-				local ret=`echo lavacli $LAVACLI_ARGS \
+				local ret=`lavacli $LAVACLI_ARGS \
 					jobs show $i \
 					| grep Health \
 					| cut -d ":" -f 2 \
