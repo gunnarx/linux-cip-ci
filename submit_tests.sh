@@ -62,16 +62,18 @@ set_up () {
 	TMP_DIR="$(mktemp -d)"
 }
 
-cancel_all() {
+cancel_all () {
   echo TODO LAVACLI CANCEL ALL
 }
+
 clean_up () {
   if [ -z "$lavacli_job_numbers" ] ; then
-    for n in cat $lavacli_job_numbers ; then
+    for n in cat $lavacli_job_numbers ; do
       echo "Cancelling job number $n..."
       echo "+ lavacli $LAVACLI_ARGS jobs cancel $1"
       ret=$(lavacli $LAVACLI_ARGS jobs cancel $1)
       echo "... retval=$ret"
+    done
   fi
   #rm -rf $TMP_DIR
 }
