@@ -146,7 +146,7 @@ cat <<EOT >$jobfile
 # This is a comment
 # Format (PIPELINE_ID added by us)
 # VERSION PIPELINE_ID ARCH CONFIG DEVICE KERNEL DEVICE_TREE MODULES
-$1 $(get_pipeline_instance) $(get_arch) $(get_config) $(get_device) $KERNEL $DTB $(get_modules)
+$1 $(get_pipeline_instance) $(get_arch) $(get_config) $(get_device) $(get_kernel_name) $(get_device_tree_name) $(get_modules)
 EOT
 
 # Delegate to submit_tests.sh
