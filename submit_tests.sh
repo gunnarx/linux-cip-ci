@@ -395,6 +395,7 @@ set_up
 TEMPLATE_IDENTIFIER="$1"
 if [ "$1" = "CANCEL" ] ; then
   cancel_all
+  exit 0
 fi
 
 find_jobs $TEMPLATE_IDENTIFIER
