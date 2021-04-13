@@ -1,12 +1,17 @@
-#!/bin/bash -x
+#!/bin/bash
 # Copyright (C) 2019, Renesas Electronics Europe GmbH, Chris Paterson
 # <chris.paterson2@renesas.com>
 #
-# Copyright (C) 2019 GENIVI Alliance
+# Copyright (C) 2019, 2021 GENIVI Alliance
 # Gunnar Andersson, <gandersson@genivi.org>
-# Modifications to include build-id in test definition and a few
-# other tweaks.  (Because we have system images as the test 
-# than only the kernel)
+# 2019/2020: Modifications to include build-id in test definition and a few
+# other tweaks.  (Because we have system images as the test instead of only
+# the kernel)
+# 2021: Further modifications when are sending Android system image
+#       tests.  This is due for a rewrite because it has WAY too many
+#       features that are not used, and it is convoluted.
+#       (In fact, there might be changes that break compatibility
+#       with the previous approach)
 #
 # This script scans the OUTPUT_DIR for any built Kernels/systems
 # and creates/submits the relevant test jobs to the CIP LAVA master.

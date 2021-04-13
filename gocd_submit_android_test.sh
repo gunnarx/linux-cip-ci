@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 #
 # Copyright (C) 2021 GENIVI Alliance
 # Gunnar Andersson, <gandersson@genivi.org>
