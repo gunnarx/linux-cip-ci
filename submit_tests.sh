@@ -371,8 +371,8 @@ check_status () {
 					| awk '{$1=$1};1'`
 				echo "Job #$i completed. Job health: $ret"
 				echo "Getting results"
-				lavacli $LAVACLI_ARGS results $i --json >testresults.json
-
+                lavacli $LAVACLI_ARGS results $i >testresult.txt
+                curl -L https://$CIP_LAVA_LAB_USER:$CIP_LAVA_LAB_TOKEN@lava.genivi.org/api/v0.2/jobs/4/junit >testresult.junit
 				if [ ${ret} != "Complete" ]; then
 					error=true
 				fi
