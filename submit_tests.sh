@@ -370,6 +370,8 @@ check_status () {
 					| cut -d ":" -f 2 \
 					| awk '{$1=$1};1'`
 				echo "Job #$i completed. Job health: $ret"
+				echo "Getting results"
+				lavacli $LAVACLI_ARGS results $i --json >testresults.json
 
 				if [ ${ret} != "Complete" ]; then
 					error=true
