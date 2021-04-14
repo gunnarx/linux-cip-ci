@@ -318,10 +318,6 @@ check_status () {
 						| grep "state" \
 						| cut -d ":" -f 2 \
 						| awk '{$1=$1};1'`
-echo DEBUG: lavacli_output is:
-echo ==========================
-cat $lavacli_output
-echo ==========================
 
 					local device_type=`cat $lavacli_output \
 						| grep "device-type" \
